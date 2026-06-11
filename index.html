@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instagram Profile Analyser</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --coral:  #F46D56; --peach:  #F4B081; --sand:   #E9D2BF;
+    --cream:  #FFF7ED; --cacao:  #57362B; --ink:    #3D302F;
+    --aqua:   #A7D5D2; --taupe:  #9B7A66; --white:  #ffffff;
+    --radius: 12px;
+  }
+  body { font-family: system-ui, -apple-system, sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 24px 16px; }
+
+  /* ── typography */
+  h1 { font-size: 24px; font-weight: 700; color: var(--ink); }
+  h2 { font-size: 13px; font-weight: 600; color: var(--taupe); letter-spacing: .07em; text-transform: uppercase; border-bottom: 1px solid #ede5db; padding-bottom: 8px; margin-bottom: 14px; margin-top: 28px; }
+  p  { font-size: 14px; color: var(--taupe); line-height: 1.6; }
+
+  /* ── cards */
+  .card { background: var(--white); border: 1px solid #e8e0d8; border-radius: var(--radius); padding: 18px 20px; margin-bottom: 12px; }
+  .card-top  { border-left: 3px solid var(--peach); }
+  .card-bot  { border-left: 3px solid #E24B4A; }
+  .card-ai   { border-left: 3px solid var(--coral); }
+  .card-aqua { border-left: 3px solid var(--aqua); }
+
+  /* ── buttons */
+  .btn { display: inline-block; border: none; border-radius: 8px; padding: 11px 22px; font-size: 14px; font-weight: 600; cursor: pointer; margin-right: 8px; margin-top: 8px; transition: opacity .15s; }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .btn-primary { background: var(--coral); color: #fff; }
+  .btn-ghost   { background: #f5ede6; color: var(--ink); }
+  .btn-sm      { padding: 8px 16px; font-size: 13px; }
+
+  /* ── badge */
+  .badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; margin-right: 4px; margin-bottom: 2px; }
+
+  /* ── metric grid */
+  .metrics { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
+  .metric { flex: 1 1 130px; border-radius: 10px; padding: 14px 16px; border-width: 1.5px; border-style: solid; }
+  .m0 { background:#FFF0EB; border-color:#F4B081; }  .m0 .mn { color:#D05C3A; } .m0 .ml { color:#B07050; }
+  .m1 { background:#EBF4FF; border-color:#93C5FD; }  .m1 .mn { color:#1D6FB8; } .m1 .ml { color:#4A7FA8; }
+  .m2 { background:#F0FBF4; border-color:#86EFAC; }  .m2 .mn { color:#1A7A3F; } .m2 .ml { color:#3D7A55; }
+  .m3 { background:#FEF9EC; border-color:#FCD34D; }  .m3 .mn { color:#927209; } .m3 .ml { color:#8A6E20; }
+  .m4 { background:#F3EEFF; border-color:#C4B5FD; }  .m4 .mn { color:#5B34B8; } .m4 .ml { color:#7058A0; }
+  .ml { font-size: 11px; font-weight: 500; margin-bottom: 4px; }
+  .mn { font-size: 22px; font-weight: 700; }
+  .ms { font-size: 11px; margin-top: 2px; opacity: .8; }
+
+  /* ── post row */
+  .post-row { display: flex; gap: 12px; align-items: flex-start; }
+  .rank { font-size: 18px; font-weight: 700; color: #d0c0b0; min-width: 28px; padding-top: 2px; }
+  .rank-bot { color: #e0b0b0; }
+  .thumb { width: 72px; height: 72px; border-radius: 8px; object-fit: cover; border: 1px solid #e0d5cc; flex-shrink: 0; }
+  .thumb-ph { width: 72px; height: 72px; border-radius: 8px; background: #f0ece6; border: 1px solid #e0d5cc; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; font-size: 20px; }
+  .thumb-ph span { font-size: 9px; color: var(--taupe); margin-top: 2px; font-weight: 600; }
+  .post-meta { font-size: 11px; color: var(--taupe); line-height: 1.6; margin-top: 6px; }
+  .post-cap  { font-size: 13px; color: var(--ink); line-height: 1.4; margin-bottom: 6px; }
+
+  /* ── upload zone */
+  .drop-zone { border: 2px dashed #d5c8be; border-radius: var(--radius); padding: 40px 24px; text-align: center; cursor: pointer; transition: border-color .2s, background .2s; background: #fffaf7; }
+  .drop-zone:hover, .drop-zone.drag { border-color: var(--coral); background: #fff5f0; }
+  .drop-zone .icon { font-size: 40px; margin-bottom: 12px; }
+  .drop-zone .label { font-size: 16px; font-weight: 600; color: var(--cacao); margin-bottom: 6px; }
+  .drop-zone .sub   { font-size: 13px; color: var(--taupe); }
+
+  /* ── intro hero */
+  .hero { text-align: center; padding: 40px 20px 32px; }
+  .hero h1 { font-size: 28px; margin-bottom: 10px; }
+  .hero p  { font-size: 15px; max-width: 460px; margin: 0 auto 28px; }
+  .hero-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 28px; }
+  .chip { background: var(--white); border: 1px solid var(--sand); border-radius: 20px; padding: 6px 14px; font-size: 12px; color: var(--taupe); }
+
+  /* ── loading */
+  .loading { text-align: center; padding: 48px; }
+  .spinner { width: 36px; height: 36px; border: 3px solid #ede5db; border-top-color: var(--coral); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 16px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── api key box */
+  .key-box { background: #fdf7f0; border: 1px solid var(--sand); border-radius: 10px; padding: 16px 18px; margin-bottom: 16px; }
+  .key-box label { font-size: 12px; color: var(--taupe); display: block; margin-bottom: 6px; }
+  .key-box input { width: 100%; padding: 9px 12px; border-radius: 8px; border: 1.5px solid #ddd3c8; font-size: 13px; font-family: monospace; background: var(--white); }
+
+  /* ── footer */
+  footer { text-align: center; padding: 32px 16px; font-size: 11px; color: #c0b0a0; }
+
+  /* ── util */
+  .gap8 { display: flex; flex-wrap: wrap; gap: 8px; }
+  .mt16 { margin-top: 16px; }
+  .hidden { display: none; }
+  .italic { font-style: italic; }
+  input[type=file] { display: none; }
+  a { color: #185FA5; }
+  @media (max-width: 480px) { .metrics { gap: 8px; } .metric { flex: 1 1 100%; } }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<footer>Instagram Profile Analyser · by <a href="https://instagram.com/camila.sunshine.online" target="_blank">Camila Sunshine</a> · <a href="https://scalablemagic.com" target="_blank">Scalable Magic</a></footer>
+
+<script>
+// ─── palette ─────────────────────────────────────────────────────────────────
+const B = { coral:"#F46D56", peach:"#F4B081", sand:"#E9D2BF", cream:"#FFF7ED",
+            cacao:"#57362B", ink:"#3D302F", aqua:"#A7D5D2", taupe:"#9B7A66" };
+
+// ─── state ───────────────────────────────────────────────────────────────────
+let state = {
+  step: "upload",       // upload | analysing | report
+  csvText: "",
+  fileName: "",
+  analysis: null,
+  apiKey: "",
+  showKeyInput: false,
+  aiReport: null,
+  aiLoading: false,
+  aiError: null,
+};
+
+function setState(patch) { Object.assign(state, patch); render(); }
+
+// ─── CSV parser ───────────────────────────────────────────────────────────────
+function parseCSV(text) {
+  const lines = text.trim().split("\n");
+  if (lines.length < 2) return [];
+  const parseRow = line => {
+    const cols = []; let cur = "", inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (c === '"') { inQ = !inQ; }
+      else if (c === "," && !inQ) { cols.push(cur.trim()); cur = ""; }
+      else cur += c;
+    }
+    cols.push(cur.trim());
+    return cols;
+  };
+  const headers = parseRow(lines[0]);
+  return lines.slice(1).filter(l => l.trim()).map(l => {
+    const vals = parseRow(l), obj = {};
+    headers.forEach((h, i) => { obj[h] = vals[i] ?? ""; });
+    return obj;
+  });
+}
+
+function findCol(obj, candidates) {
+  for (const k of Object.keys(obj))
+    for (const c of candidates)
+      if (k.toLowerCase().includes(c.toLowerCase())) return k;
+  return null;
+}
+
+// ─── analysis engine ─────────────────────────────────────────────────────────
+function analyse(posts) {
+  if (!posts.length) return null;
+  const s = posts[0];
+  const likeCol = findCol(s, ["like_count","likes"]);
+  const commCol = findCol(s, ["comment_count","comments"]);
+  const typeCol = findCol(s, ["type","post_type","media_type"]);
+  const dateCol = findCol(s, ["date","timestamp","created"]);
+  const captCol = findCol(s, ["caption","text","description"]);
+  const viewCol = findCol(s, ["view_count","views"]);
+  const imgCol  = findCol(s, ["image","thumbnail","display_url","media_url","img","cover","photo"]);
+
+  const enriched = posts.map(p => {
+    const likes    = parseInt(p[likeCol] || 0) || 0;
+    const comments = parseInt(p[commCol] || 0) || 0;
+    const score    = likes + comments * 3;
+    const type     = p[typeCol] || "Image";
+    const caption  = p[captCol] || "";
+    const dateStr  = p[dateCol] || "";
+    const dateObj  = dateStr ? new Date(dateStr) : null;
+    const hour     = dateObj && !isNaN(dateObj) ? dateObj.getUTCHours() : -1;
+    const htCount  = Object.keys(p).filter(k => k.toLowerCase().startsWith("hashtag") && p[k]?.trim()).length;
+    const hasCta   = /COMMENT|DM|drop|reply|tag|send/i.test(caption);
+    const imgUrl   = imgCol ? p[imgCol] : "";
+    return { ...p, _likes:likes, _comments:comments, _score:score, _type:type,
+             _caption:caption, _date:dateObj, _hour:hour, _htCount:htCount,
+             _hasCta:hasCta, _capLen:caption.length, _imgUrl:imgUrl };
+  });
+
+  const sorted = [...enriched].sort((a, b) => b._score - a._score);
+  const top10  = sorted.slice(0, 10);
+  const bot10  = sorted.slice(-10).reverse();
+
+  const byType = {};
+  enriched.forEach(p => {
+    if (!byType[p._type]) byType[p._type] = { likes:0, n:0 };
+    byType[p._type].likes += p._likes;
+    byType[p._type].n++;
+  });
+  Object.keys(byType).forEach(k => { byType[k].avg = +(byType[k].likes / byType[k].n).toFixed(1); });
+
+  const byHour = {};
+  enriched.forEach(p => {
+    if (p._hour < 0) return;
+    if (!byHour[p._hour]) byHour[p._hour] = { total:0, n:0 };
+    byHour[p._hour].total += p._score;
+    byHour[p._hour].n++;
+  });
+  const hourData = Object.keys(byHour)
+    .map(h => ({ hour: parseInt(h), avg: +(byHour[h].total / byHour[h].n).toFixed(1), n: byHour[h].n }))
+    .sort((a, b) => a.hour - b.hour);
+
+  const withHt  = enriched.filter(p => p._htCount > 0);
+  const noHt    = enriched.filter(p => p._htCount === 0);
+  const avgWith    = withHt.length ? +(withHt.reduce((s,p) => s+p._likes,0)/withHt.length).toFixed(1) : 0;
+  const avgWithout = noHt.length   ? +(noHt.reduce((s,p) => s+p._likes,0)/noHt.length).toFixed(1)    : 0;
+  const deadZone = enriched.filter(p => p._hour >= 1 && p._hour <= 5).length;
+  const topType  = Object.keys(byType).sort((a,b) => byType[b].avg - byType[a].avg)[0];
+
+  return { enriched, sorted, top10, bot10, byType, topType, hourData,
+           avgWith, avgWithout, deadZone, total: enriched.length };
+}
+
+// ─── reason generators ───────────────────────────────────────────────────────
+const cap = (s, n=90) => s?.length > n ? s.slice(0,n)+"…" : (s||"");
+
+function topReason(p) {
+  const r = [];
+  if (p._type==="Video"||p._type==="Reel") r.push("Video format tends to outperform static images.");
+  if (p._htCount===0) r.push("No hashtags — resonance drove this, not discovery.");
+  if (p._hour>=7&&p._hour<=11) r.push("Posted in the AU + US crossover window (7–11am AEST).");
+  if (p._hasCta) r.push("Caption has a comment-trigger CTA — strong algorithm signal.");
+  if (p._likes>=30) r.push("High absolute likes suggest it spread beyond existing followers.");
+  if (p._comments>=5) r.push(`${p._comments} comments — real conversations, not passive scrolling.`);
+  return r.length ? r.join(" ") : "Strong engagement relative to the account average.";
+}
+
+function botReason(p) {
+  const r = [];
+  if (p._hour>=1&&p._hour<=5) r.push(`Posted at ${p._hour}h UTC — outside both AU and US active windows.`);
+  if (p._type==="Image"&&p._capLen>700) r.push("Very long caption on a static image — high scroll-past risk.");
+  if (p._capLen<30) r.push("Little or no caption — no context for algorithm or viewer.");
+  if (p._htCount>20) r.push("Heavy hashtag use without matching engagement — misaligned targeting.");
+  if (p._score===0) r.push("Zero engagement — may have been very recently posted.");
+  return r.length ? r.join(" ") : "Low engagement. Try posting at 7–10am AEST and lead with a sharper hook.";
+}
+
+// ─── AI call ─────────────────────────────────────────────────────────────────
+async function runAI() {
+  if (!state.apiKey) { setState({ showKeyInput: true }); return; }
+  setState({ aiLoading: true, aiError: null });
+  const { analysis, apiKey } = state;
+  const t3 = analysis.top10.slice(0,3).map(p => `"${cap(p._caption,60)}" (${p._likes}L ${p._comments}C)`).join("; ");
+  const b3 = analysis.bot10.slice(0,3).map(p => `"${cap(p._caption,60)}" (${p._likes}L)`).join("; ");
+  const typesSummary = Object.keys(analysis.byType).map(k => `${k}: avg ${analysis.byType[k].avg} likes`).join(", ");
+  const htDelta = (analysis.avgWith - analysis.avgWithout).toFixed(1);
+
+  const prompt = `You are an expert Instagram growth strategist for the wellness, coaching, and healing niche.
+
+Post data summary:
+- Total posts analysed: ${analysis.total}
+- Content types: ${typesSummary}
+- Hashtag impact: ${htDelta > 0 ? "+" : ""}${htDelta} avg likes (with vs without hashtags)
+- Posts published in dead zone (1–5am UTC): ${analysis.deadZone}
+- Top 3 posts: ${t3}
+- Bottom 3 posts: ${b3}
+
+Return ONLY valid JSON (no markdown, no backticks, no preamble):
+{
+  "executive_summary": "3–4 sentence plain-language summary of what the data reveals about this account's performance",
+  "key_patterns": [
+    { "title": "Pattern title", "insight": "One concrete insight sentence" }
+  ],
+  "competitors": [
+    { "name": "Real full name", "handle": "@handle", "url": "https://instagram.com/handle",
+      "followers": "approx e.g. 12K", "why_bigger": "one sentence", "what_to_steal": "one concrete tactic",
+      "your_edge": "one advantage the account in question could leverage" }
+  ],
+  "white_space": "One paragraph describing unclaimed territory this creator could own in their niche",
+  "recommendations": [
+    { "format": "Format name", "why": "Why this works for this niche", "hook_example": "Actual hook line ready to use" }
+  ]
+}
+Exactly 4 key_patterns, exactly 3 competitors (real accounts only — do not fabricate handles), exactly 5 recommendations.`;
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1500,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    const txt = data.content?.find(b => b.type === "text")?.text || "";
+    const clean = txt.replace(/```json|```/g,"").trim();
+    setState({ aiLoading: false, aiReport: JSON.parse(clean) });
+  } catch(e) {
+    setState({ aiLoading: false, aiError: "Could not load AI insights. Check your API key and try again. (" + e.message + ")" });
+  }
+}
+
+// ─── file handling ────────────────────────────────────────────────────────────
+function handleFile(file) {
+  if (!file) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    setState({ csvText: ev.target.result, fileName: file.name });
+  };
+  r.readAsText(file);
+}
+
+function runAnalysis() {
+  if (!state.csvText.trim()) return;
+  setState({ step: "analysing" });
+  setTimeout(() => {
+    const posts = parseCSV(state.csvText);
+    const analysis = analyse(posts);
+    if (!analysis || analysis.total === 0) {
+      setState({ step: "upload", csvText: "", fileName: "", analysis: null });
+      alert("Could not read posts from this file. Make sure it has like_count, type, date columns.");
+      return;
+    }
+    setState({ step: "report", analysis });
+  }, 400);
+}
+
+function reset() {
+  setState({ step:"upload", csvText:"", fileName:"", analysis:null,
+             aiReport:null, aiError:null, aiLoading:false, showKeyInput:false });
+}
+
+// ─── thumb ───────────────────────────────────────────────────────────────────
+const EMOJI = { Video:"▶", Reel:"🎬", Image:"🖼" };
+function thumbHTML(url, type) {
+  const emoji = EMOJI[type] || "🖼";
+  if (!url) return `<div class="thumb-ph">${emoji}<span>${type||"IMG"}</span></div>`;
+  return `<div style="position:relative;width:72px;height:72px;flex-shrink:0">
+    <img class="thumb" src="${url}" onerror="this.parentNode.innerHTML='<div class=\\"thumb-ph\\">${emoji}<span>${type}</span></div>'" loading="lazy" />
+    <span style="position:absolute;bottom:3px;right:3px;background:#185FA5;color:#fff;font-size:8px;font-weight:700;padding:1px 4px;border-radius:4px">${(type||"IMG").slice(0,3).toUpperCase()}</span>
+  </div>`;
+}
+
+// ─── badge ────────────────────────────────────────────────────────────────────
+function badge(text, bg="#f0ece6", color="#6b5c50") {
+  return `<span class="badge" style="background:${bg};color:${color}">${text}</span>`;
+}
+
+// ─── chart ────────────────────────────────────────────────────────────────────
+function drawChart(canvasId, labels, values, colors) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width, H = canvas.height;
+  const pad = { top:16, right:16, bottom:32, left:44 };
+  const cW = W - pad.left - pad.right;
+  const cH = H - pad.top  - pad.bottom;
+  ctx.clearRect(0,0,W,H);
+  if (!values.length) return;
+  const max = Math.max(...values) * 1.15 || 1;
+  const bw  = (cW / values.length) * 0.6;
+  const gap = cW / values.length;
+  // gridlines
+  ctx.strokeStyle = "#ede5db"; ctx.lineWidth = 1;
+  for (let i=0;i<=4;i++) {
+    const y = pad.top + cH - (cH * i / 4);
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left+cW, y); ctx.stroke();
+    ctx.fillStyle="#b0a090"; ctx.font="10px system-ui"; ctx.textAlign="right";
+    ctx.fillText(((max/4*i)|0).toLocaleString(), pad.left-4, y+3);
+  }
+  // bars
+  values.forEach((v, i) => {
+    const bh = (v/max)*cH;
+    const x  = pad.left + gap*i + gap/2 - bw/2;
+    const y  = pad.top + cH - bh;
+    ctx.fillStyle = colors[i] || B.coral;
+    ctx.beginPath(); ctx.roundRect(x, y, bw, bh, 4); ctx.fill();
+    ctx.fillStyle="#9B7A66"; ctx.font="10px system-ui"; ctx.textAlign="center";
+    ctx.fillText(labels[i], pad.left + gap*i + gap/2, H - 8);
+  });
+}
+
+// ─── render ───────────────────────────────────────────────────────────────────
+function render() {
+  const el = document.getElementById("app");
+  el.innerHTML = buildHTML();
+  bindEvents();
+  if (state.step === "report" && state.analysis) requestAnimationFrame(drawCharts);
+}
+
+function drawCharts() {
+  const { analysis } = state;
+  if (!analysis) return;
+  // type chart
+  const tk = Object.keys(analysis.byType);
+  const tc = { Image:"#86EFAC", Video:"#93C5FD", Reel:"#C4B5FD" };
+  drawChart("chartType", tk.map(k=>`${k} (${analysis.byType[k].n})`),
+            tk.map(k=>analysis.byType[k].avg), tk.map(k=>tc[k]||B.peach));
+  // hour chart
+  if (analysis.hourData.length) {
+    const hourColor = h => (h>=7&&h<=11)||h===19||h===20 ? "#86EFAC" : h>=1&&h<=5 ? "#FCA5A5" : B.peach;
+    drawChart("chartHour",
+      analysis.hourData.map(h=>`${h.hour}h`),
+      analysis.hourData.map(h=>h.avg),
+      analysis.hourData.map(h=>hourColor(h.hour)));
+  }
+}
+
+function buildHTML() {
+  if (state.step === "upload") return buildUpload();
+  if (state.step === "analysing") return buildLoading();
+  if (state.step === "report") return buildReport();
+  return "";
+}
+
+// ── upload screen ─────────────────────────────────────────────────────────────
+function buildUpload() {
+  const ready = !!state.csvText.trim();
+  return `
+  <div class="hero">
+    <h1>Instagram Profile Analyser</h1>
+    <p>Upload your post export CSV and get a full performance breakdown ... top posts, timing strategy, format comparison, and AI recommendations.</p>
+    <div class="hero-chips">
+      <span class="chip">🏆 Top & bottom posts ranked</span>
+      <span class="chip">⏰ Timezone strategy</span>
+      <span class="chip">📊 Format comparison</span>
+      <span class="chip">🤖 AI insights</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Upload your CSV file</h2>
+    <div class="drop-zone ${state.fileName ? "" : ""}" id="dropZone">
+      <div class="icon">📁</div>
+      ${state.fileName
+        ? `<div class="label" style="color:var(--coral)">✓ ${state.fileName}</div>
+           <div class="sub">File loaded — ready to analyse</div>`
+        : `<div class="label">Drop your CSV here or click to choose</div>
+           <div class="sub">Works with Phantombuster, Apify, or any export with likes, comments, type, date</div>`}
+    </div>
+    <input type="file" id="fileInput" accept=".csv,.txt">
+    <div style="margin-top:16px;font-size:12px;color:var(--taupe);background:#fdf3ea;border-radius:8px;padding:10px 14px">
+      <strong>Required columns:</strong> type, like_count, comment_count, date &nbsp;·&nbsp;
+      <strong>Optional:</strong> caption, image (thumbnail URL), hashtags/0…N
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:8px">
+    <button class="btn btn-primary" id="btnAnalyse" ${ready?"":"disabled"} style="font-size:15px;padding:13px 32px">
+      Analyse my posts →
+    </button>
+    ${ready ? `<button class="btn btn-ghost btn-sm" id="btnReset">Clear</button>` : ""}
+  </div>
+
+  <div style="text-align:center;margin-top:20px;font-size:11px;color:#c0b0a0">
+    Your data stays in your browser. Nothing is uploaded to any server.
+  </div>`;
+}
+
+// ── loading ───────────────────────────────────────────────────────────────────
+function buildLoading() {
+  return `<div class="loading">
+    <div class="spinner"></div>
+    <p>Analysing your posts…</p>
+  </div>`;
+}
+
+// ── report ────────────────────────────────────────────────────────────────────
+function buildReport() {
+  const { analysis, aiReport, aiLoading, aiError, showKeyInput, apiKey } = state;
+  if (!analysis) return "";
+
+  const htDelta = (analysis.avgWith - analysis.avgWithout).toFixed(1);
+  const htLabel = Math.abs(htDelta) < 1 ? "~0 diff" : `${htDelta > 0 ? "+" : ""}${htDelta} likes`;
+  const topType = analysis.topType || "Image";
+
+  // post card builder
+  const postCard = (p, i, isTop) => {
+    const clazz = isTop ? "card card-top" : "card card-bot";
+    const rankLabel = isTop ? `#${i+1}` : `↓${i+1}`;
+    const rankClass = isTop ? "rank" : "rank rank-bot";
+    const reason = isTop ? topReason(p) : botReason(p);
+    return `
+    <div class="${clazz}">
+      <div class="post-row">
+        <div class="${rankClass}">${rankLabel}</div>
+        ${thumbHTML(p._imgUrl, p._type)}
+        <div style="flex:1;min-width:0">
+          <div class="post-cap">${cap(p._caption) || '<em style="color:var(--taupe)">No caption</em>'}</div>
+          <div>
+            ${badge(p._type, "#e3eefa","#185FA5")}
+            ${badge("♥ "+p._likes+" · 💬 "+p._comments, "#faeeda","#854F0B")}
+            ${p._htCount>0 ? badge(p._htCount+" tags","#fef3cd","#856404") : ""}
+            ${p._hour>=7&&p._hour<=11 ? badge("Good timing","#eeedfe","#534ab7") : ""}
+            ${p._hasCta ? badge("Has CTA","#f0faf5","#1a7a3f") : ""}
+            ${p._hour>=1&&p._hour<=5&&!isTop ? badge("Dead zone","#fde8e8","#922") : ""}
+          </div>
+          <div class="post-meta">${reason}</div>
+          ${p.post_url ? `<a href="${p.post_url}" target="_blank" style="font-size:11px;margin-top:4px;display:inline-block">View post ↗</a>` : ""}
+        </div>
+      </div>
+    </div>`;
+  };
+
+  // AI section
+  let aiSection = "";
+  if (!aiReport && !aiLoading) {
+    aiSection = `
+    <div class="card" style="margin-top:28px">
+      <h2 style="margin-top:0">AI-powered insights</h2>
+      <p style="margin-bottom:12px">Get competitor accounts, pattern analysis, white space opportunities, and 5 tailored content format recommendations — powered by Claude.</p>
+      ${showKeyInput ? `
+        <div class="key-box">
+          <label>Anthropic API key (sk-ant-…) — stays in your browser session only</label>
+          <input type="password" id="keyInput" value="${apiKey}" placeholder="sk-ant-api03-…">
+        </div>` : ""}
+      <button class="btn btn-primary" id="btnAI" ${showKeyInput && !apiKey ? "disabled" : ""}>
+        ${showKeyInput ? "Run AI analysis →" : "Unlock AI insights"}
+      </button>
+    </div>`;
+  } else if (aiLoading) {
+    aiSection = `<div class="card" style="margin-top:28px">
+      <div class="loading" style="padding:24px">
+        <div class="spinner"></div>
+        <p>Researching competitors and generating recommendations…</p>
+      </div>
+    </div>`;
+  } else if (aiError) {
+    aiSection = `<div class="card" style="margin-top:28px">
+      <div style="color:#922;background:#fde8e8;border-radius:8px;padding:12px;font-size:13px">${aiError}</div>
+      <button class="btn btn-ghost btn-sm" id="btnRetryAI" style="margin-top:10px">Try again</button>
+    </div>`;
+  } else if (aiReport) {
+    const patterns = (aiReport.key_patterns||[]).map((p,i) => `
+      <div class="card" style="flex:1 1 200px">
+        <div style="font-size:12px;font-weight:600;color:var(--coral);margin-bottom:4px">${p.title}</div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5">${p.insight}</div>
+      </div>`).join("");
+
+    const competitors = (aiReport.competitors||[]).map(c => `
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:8px">
+          <div>
+            <div style="font-size:14px;font-weight:600;color:var(--ink)">${c.name}</div>
+            <a href="${c.url}" target="_blank" style="font-size:12px">${c.handle}</a>
+          </div>
+          ${badge(c.followers+" followers","#eaf3de","#3b6d11")}
+        </div>
+        <div style="font-size:13px;color:var(--taupe);margin-bottom:5px;line-height:1.5"><strong style="color:var(--ink)">Why they grew:</strong> ${c.why_bigger}</div>
+        <div style="font-size:13px;color:var(--taupe);margin-bottom:5px;line-height:1.5"><strong style="color:var(--ink)">What to steal:</strong> ${c.what_to_steal}</div>
+        <div style="font-size:12px;color:#3b6d11;background:#eaf3de;border-radius:6px;padding:6px 10px;line-height:1.5"><strong>Your edge:</strong> ${c.your_edge}</div>
+      </div>`).join("");
+
+    const recs = (aiReport.recommendations||[]).map((r,i) => `
+      <div class="card card-aqua">
+        <div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px">${i+1}. ${r.format}</div>
+        <div style="font-size:13px;color:var(--taupe);margin-bottom:6px;line-height:1.5">${r.why}</div>
+        <div style="font-size:12px;font-style:italic;color:#5a4a3a;background:#fdf3ea;border-radius:6px;padding:6px 10px">Hook: "${r.hook_example}"</div>
+      </div>`).join("");
+
+    aiSection = `
+    <div style="margin-top:28px">
+      ${aiReport.executive_summary ? `
+        <div style="background:#fdf7f0;border:1px solid var(--sand);border-radius:10px;padding:16px 18px;margin-bottom:20px;font-size:14px;color:var(--ink);line-height:1.7">
+          ${aiReport.executive_summary}
+        </div>` : ""}
+      <h2>Key patterns</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:10px">${patterns}</div>
+      ${aiReport.white_space ? `
+        <div class="card card-ai" style="margin-top:12px">
+          <div style="font-size:12px;font-weight:600;color:var(--coral);margin-bottom:4px">White space — what nobody in the niche is doing yet</div>
+          <div style="font-size:13px;color:var(--ink);line-height:1.6">${aiReport.white_space}</div>
+        </div>` : ""}
+      <h2>Competitors to watch</h2>
+      ${competitors}
+      <h2>5 content format recommendations</h2>
+      ${recs}
+    </div>`;
+  }
+
+  return `
+  <div style="margin-bottom:20px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:8px">
+    <div>
+      <h1 style="margin-bottom:4px">Performance report</h1>
+      <p>${analysis.total} posts analysed</p>
+    </div>
+    <button class="btn btn-ghost btn-sm" id="btnReset">← New analysis</button>
+  </div>
+
+  <div class="metrics">
+    <div class="metric m0"><div class="ml">Total posts</div><div class="mn">${analysis.total}</div><div class="ms">${Object.keys(analysis.byType).map(k=>`${analysis.byType[k].n} ${k}`).join(" · ")}</div></div>
+    <div class="metric m1"><div class="ml">Avg likes (${topType})</div><div class="mn">${analysis.byType[topType]?.avg||0}</div><div class="ms">best performing format</div></div>
+    <div class="metric m2"><div class="ml">Hashtag impact</div><div class="mn">${htLabel}</div><div class="ms">with tags vs without</div></div>
+    <div class="metric m3"><div class="ml">Dead-zone posts</div><div class="mn">${analysis.deadZone}</div><div class="ms">published 1–5am UTC</div></div>
+    <div class="metric m4"><div class="ml">Best window</div><div class="mn" style="font-size:15px">7–11am AEST</div><div class="ms">AU + US crossover</div></div>
+  </div>
+
+  <h2>Avg likes by content type</h2>
+  <div class="card"><canvas id="chartType" width="720" height="180"></canvas></div>
+
+  ${analysis.hourData.length ? `
+  <h2>Avg score by posting hour (UTC)</h2>
+  <p style="margin-bottom:10px;font-size:12px">🟢 good windows · 🟡 neutral · 🔴 dead zones (1–5am)</p>
+  <div class="card"><canvas id="chartHour" width="720" height="180"></canvas></div>` : ""}
+
+  <h2>Top 10 posts</h2>
+  ${analysis.top10.map((p,i) => postCard(p,i,true)).join("")}
+
+  <h2 style="margin-top:28px">Bottom 10 posts</h2>
+  ${analysis.bot10.map((p,i) => postCard(p,i,false)).join("")}
+
+  ${aiSection}
+
+  <div style="text-align:center;margin-top:32px">
+    <button class="btn btn-ghost btn-sm" id="btnReset2">Start new analysis</button>
+  </div>`;
+}
+
+// ─── events ───────────────────────────────────────────────────────────────────
+function bindEvents() {
+  // upload
+  const dropZone  = document.getElementById("dropZone");
+  const fileInput = document.getElementById("fileInput");
+  const btnAnalyse= document.getElementById("btnAnalyse");
+  const btnReset  = document.getElementById("btnReset");
+  const btnReset2 = document.getElementById("btnReset2");
+  const btnAI     = document.getElementById("btnAI");
+  const keyInput  = document.getElementById("keyInput");
+  const btnRetry  = document.getElementById("btnRetryAI");
+
+  if (dropZone) {
+    dropZone.onclick = () => fileInput && fileInput.click();
+    dropZone.ondragover = e => { e.preventDefault(); dropZone.classList.add("drag"); };
+    dropZone.ondragleave = () => dropZone.classList.remove("drag");
+    dropZone.ondrop = e => {
+      e.preventDefault(); dropZone.classList.remove("drag");
+      handleFile(e.dataTransfer.files[0]);
+    };
+  }
+  if (fileInput)  fileInput.onchange = e => handleFile(e.target.files[0]);
+  if (btnAnalyse) btnAnalyse.onclick = runAnalysis;
+  if (btnReset)   btnReset.onclick   = reset;
+  if (btnReset2)  btnReset2.onclick  = reset;
+  if (btnAI) {
+    btnAI.onclick = () => {
+      if (!state.showKeyInput) { setState({ showKeyInput: true }); return; }
+      runAI();
+    };
+  }
+  if (keyInput)   keyInput.oninput  = e => { state.apiKey = e.target.value; btnAI && (btnAI.disabled = !e.target.value); };
+  if (btnRetry)   btnRetry.onclick  = () => { setState({ aiError: null }); runAI(); };
+}
+
+// ─── boot ─────────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
