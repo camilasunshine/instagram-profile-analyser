@@ -10,6 +10,7 @@
     --coral:  #F46D56; --peach:  #F4B081; --sand:   #E9D2BF;
     --cream:  #FFF7ED; --cacao:  #57362B; --ink:    #3D302F;
     --aqua:   #A7D5D2; --taupe:  #9B7A66; --white:  #ffffff;
+    --green:  #34A853; --amber:  #E8A33D; --red:    #E0554F;
     --radius: 12px;
   }
   body { font-family: system-ui, -apple-system, sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; }
@@ -24,11 +25,10 @@
   .card { background: var(--white); border: 1px solid #e8e0d8; border-radius: var(--radius); padding: 18px 20px; margin-bottom: 12px; }
   .card-top  { border-left: 3px solid var(--peach); }
   .card-bot  { border-left: 3px solid #E24B4A; }
-  .card-ai   { border-left: 3px solid var(--coral); }
-  .card-aqua { border-left: 3px solid var(--aqua); }
+  .card-paid { border-left: 3px solid var(--coral); }
 
   /* ── buttons */
-  .btn { display: inline-block; border: none; border-radius: 8px; padding: 11px 22px; font-size: 14px; font-weight: 600; cursor: pointer; margin-right: 8px; margin-top: 8px; transition: opacity .15s; }
+  .btn { display: inline-block; border: none; border-radius: 8px; padding: 11px 22px; font-size: 14px; font-weight: 600; cursor: pointer; margin-right: 8px; margin-top: 8px; transition: opacity .15s; text-decoration: none; }
   .btn:disabled { opacity: .45; cursor: not-allowed; }
   .btn-primary { background: var(--coral); color: #fff; }
   .btn-ghost   { background: #f5ede6; color: var(--ink); }
@@ -38,16 +38,17 @@
   .badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; margin-right: 4px; margin-bottom: 2px; }
 
   /* ── metric grid */
-  .metrics { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
-  .metric { flex: 1 1 130px; border-radius: 10px; padding: 14px 16px; border-width: 1.5px; border-style: solid; }
-  .m0 { background:#FFF0EB; border-color:#F4B081; }  .m0 .mn { color:#D05C3A; } .m0 .ml { color:#B07050; }
-  .m1 { background:#EBF4FF; border-color:#93C5FD; }  .m1 .mn { color:#1D6FB8; } .m1 .ml { color:#4A7FA8; }
-  .m2 { background:#F0FBF4; border-color:#86EFAC; }  .m2 .mn { color:#1A7A3F; } .m2 .ml { color:#3D7A55; }
-  .m3 { background:#FEF9EC; border-color:#FCD34D; }  .m3 .mn { color:#927209; } .m3 .ml { color:#8A6E20; }
-  .m4 { background:#F3EEFF; border-color:#C4B5FD; }  .m4 .mn { color:#5B34B8; } .m4 .ml { color:#7058A0; }
-  .ml { font-size: 11px; font-weight: 500; margin-bottom: 4px; }
-  .mn { font-size: 22px; font-weight: 700; }
-  .ms { font-size: 11px; margin-top: 2px; opacity: .8; }
+  .metrics { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
+  .metric { flex: 1 1 220px; border-radius: 10px; padding: 14px 16px; border-width: 1.5px; border-style: solid; }
+  .metric.good  { background:#F0FBF4; border-color: var(--green); }
+  .metric.ok    { background:#FEF9EC; border-color: var(--amber); }
+  .metric.bad   { background:#FDEDEC; border-color: var(--red); }
+  .metric.info  { background:#F3EEFF; border-color:#C4B5FD; }
+  .ml { font-size: 11px; font-weight: 600; margin-bottom: 4px; display:flex; align-items:center; gap:6px; }
+  .mn { font-size: 22px; font-weight: 700; color: var(--ink); }
+  .mtip { font-size: 12px; margin-top: 6px; line-height: 1.5; color: var(--ink); }
+  .dot { width:9px; height:9px; border-radius:50%; display:inline-block; }
+  .dot.good { background: var(--green); } .dot.ok { background: var(--amber); } .dot.bad { background: var(--red); } .dot.info { background:#8B5CF6; }
 
   /* ── post row */
   .post-row { display: flex; gap: 12px; align-items: flex-start; }
@@ -69,28 +70,33 @@
   /* ── intro hero */
   .hero { text-align: center; padding: 40px 20px 32px; }
   .hero h1 { font-size: 28px; margin-bottom: 10px; }
-  .hero p  { font-size: 15px; max-width: 460px; margin: 0 auto 28px; }
+  .hero p  { font-size: 15px; max-width: 480px; margin: 0 auto 28px; }
   .hero-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 28px; }
   .chip { background: var(--white); border: 1px solid var(--sand); border-radius: 20px; padding: 6px 14px; font-size: 12px; color: var(--taupe); }
+
+  /* ── how-to box */
+  .howto { background: #fdf7f0; border: 1px solid var(--sand); border-radius: 10px; padding: 16px 18px; margin-bottom: 16px; font-size: 13px; line-height: 1.7; color: var(--ink); }
+  .howto ol { margin: 8px 0 8px 20px; }
+  .howto a { color: #185FA5; font-weight: 600; }
+  .howto summary { cursor: pointer; font-weight: 600; color: var(--coral); font-size: 13px; }
 
   /* ── loading */
   .loading { text-align: center; padding: 48px; }
   .spinner { width: 36px; height: 36px; border: 3px solid #ede5db; border-top-color: var(--coral); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 16px; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ── api key box */
-  .key-box { background: #fdf7f0; border: 1px solid var(--sand); border-radius: 10px; padding: 16px 18px; margin-bottom: 16px; }
-  .key-box label { font-size: 12px; color: var(--taupe); display: block; margin-bottom: 6px; }
-  .key-box input { width: 100%; padding: 9px 12px; border-radius: 8px; border: 1.5px solid #ddd3c8; font-size: 13px; font-family: monospace; background: var(--white); }
+  /* ── paywall */
+  .paywall-grid { display: flex; flex-wrap: wrap; gap: 12px; }
+  .paywall-card { flex: 1 1 220px; }
+  .price { font-size: 22px; font-weight: 700; color: var(--coral); margin: 4px 0 8px; }
+  .bundle { background: linear-gradient(135deg, #FFF0EB, #FFF7ED); border: 1.5px solid var(--peach); }
 
   /* ── footer */
   footer { text-align: center; padding: 32px 16px; font-size: 11px; color: #c0b0a0; }
 
   /* ── util */
-  .gap8 { display: flex; flex-wrap: wrap; gap: 8px; }
   .mt16 { margin-top: 16px; }
   .hidden { display: none; }
-  .italic { font-style: italic; }
   input[type=file] { display: none; }
   a { color: #185FA5; }
   @media (max-width: 480px) { .metrics { gap: 8px; } .metric { flex: 1 1 100%; } }
@@ -101,9 +107,18 @@
 <footer>Instagram Profile Analyser · by <a href="https://instagram.com/camila.sunshine.online" target="_blank">Camila Sunshine</a> · <a href="https://scalablemagic.com" target="_blank">Scalable Magic</a></footer>
 
 <script>
+// ─── Stripe payment links — replace with real links ──────────────────────────
+const STRIPE_LINKS = {
+  deep:       "STRIPE_LINK_DEEP_ANALYSIS",
+  competitor: "STRIPE_LINK_COMPETITOR",
+  strategy:   "STRIPE_LINK_STRATEGY",
+  bundle:     "STRIPE_LINK_BUNDLE",
+};
+
 // ─── palette ─────────────────────────────────────────────────────────────────
 const B = { coral:"#F46D56", peach:"#F4B081", sand:"#E9D2BF", cream:"#FFF7ED",
-            cacao:"#57362B", ink:"#3D302F", aqua:"#A7D5D2", taupe:"#9B7A66" };
+            cacao:"#57362B", ink:"#3D302F", aqua:"#A7D5D2", taupe:"#9B7A66",
+            green:"#34A853", amber:"#E8A33D", red:"#E0554F" };
 
 // ─── state ───────────────────────────────────────────────────────────────────
 let state = {
@@ -111,11 +126,6 @@ let state = {
   csvText: "",
   fileName: "",
   analysis: null,
-  apiKey: "",
-  showKeyInput: false,
-  aiReport: null,
-  aiLoading: false,
-  aiError: null,
 };
 
 function setState(patch) { Object.assign(state, patch); render(); }
@@ -159,7 +169,6 @@ function analyse(posts) {
   const typeCol = findCol(s, ["type","post_type","media_type"]);
   const dateCol = findCol(s, ["date","timestamp","created"]);
   const captCol = findCol(s, ["caption","text","description"]);
-  const viewCol = findCol(s, ["view_count","views"]);
   const imgCol  = findCol(s, ["image","thumbnail","display_url","media_url","img","cover","photo"]);
 
   const enriched = posts.map(p => {
@@ -209,8 +218,10 @@ function analyse(posts) {
   const deadZone = enriched.filter(p => p._hour >= 1 && p._hour <= 5).length;
   const topType  = Object.keys(byType).sort((a,b) => byType[b].avg - byType[a].avg)[0];
 
+  const bestHour = hourData.length ? hourData.reduce((a,b)=> b.avg > a.avg ? b : a) : null;
+
   return { enriched, sorted, top10, bot10, byType, topType, hourData,
-           avgWith, avgWithout, deadZone, total: enriched.length };
+           avgWith, avgWithout, deadZone, total: enriched.length, bestHour };
 }
 
 // ─── reason generators ───────────────────────────────────────────────────────
@@ -237,64 +248,6 @@ function botReason(p) {
   return r.length ? r.join(" ") : "Low engagement. Try posting at 7–10am AEST and lead with a sharper hook.";
 }
 
-// ─── AI call ─────────────────────────────────────────────────────────────────
-async function runAI() {
-  if (!state.apiKey) { setState({ showKeyInput: true }); return; }
-  setState({ aiLoading: true, aiError: null });
-  const { analysis, apiKey } = state;
-  const t3 = analysis.top10.slice(0,3).map(p => `"${cap(p._caption,60)}" (${p._likes}L ${p._comments}C)`).join("; ");
-  const b3 = analysis.bot10.slice(0,3).map(p => `"${cap(p._caption,60)}" (${p._likes}L)`).join("; ");
-  const typesSummary = Object.keys(analysis.byType).map(k => `${k}: avg ${analysis.byType[k].avg} likes`).join(", ");
-  const htDelta = (analysis.avgWith - analysis.avgWithout).toFixed(1);
-
-  const prompt = `You are an expert Instagram growth strategist for the wellness, coaching, and healing niche.
-
-Post data summary:
-- Total posts analysed: ${analysis.total}
-- Content types: ${typesSummary}
-- Hashtag impact: ${htDelta > 0 ? "+" : ""}${htDelta} avg likes (with vs without hashtags)
-- Posts published in dead zone (1–5am UTC): ${analysis.deadZone}
-- Top 3 posts: ${t3}
-- Bottom 3 posts: ${b3}
-
-Return ONLY valid JSON (no markdown, no backticks, no preamble):
-{
-  "executive_summary": "3–4 sentence plain-language summary of what the data reveals about this account's performance",
-  "key_patterns": [
-    { "title": "Pattern title", "insight": "One concrete insight sentence" }
-  ],
-  "competitors": [
-    { "name": "Real full name", "handle": "@handle", "url": "https://instagram.com/handle",
-      "followers": "approx e.g. 12K", "why_bigger": "one sentence", "what_to_steal": "one concrete tactic",
-      "your_edge": "one advantage the account in question could leverage" }
-  ],
-  "white_space": "One paragraph describing unclaimed territory this creator could own in their niche",
-  "recommendations": [
-    { "format": "Format name", "why": "Why this works for this niche", "hook_example": "Actual hook line ready to use" }
-  ]
-}
-Exactly 4 key_patterns, exactly 3 competitors (real accounts only — do not fabricate handles), exactly 5 recommendations.`;
-
-  try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1500,
-        messages: [{ role: "user", content: prompt }]
-      })
-    });
-    const data = await res.json();
-    if (data.error) throw new Error(data.error.message);
-    const txt = data.content?.find(b => b.type === "text")?.text || "";
-    const clean = txt.replace(/```json|```/g,"").trim();
-    setState({ aiLoading: false, aiReport: JSON.parse(clean) });
-  } catch(e) {
-    setState({ aiLoading: false, aiError: "Could not load AI insights. Check your API key and try again. (" + e.message + ")" });
-  }
-}
-
 // ─── file handling ────────────────────────────────────────────────────────────
 function handleFile(file) {
   if (!file) return;
@@ -313,7 +266,7 @@ function runAnalysis() {
     const analysis = analyse(posts);
     if (!analysis || analysis.total === 0) {
       setState({ step: "upload", csvText: "", fileName: "", analysis: null });
-      alert("Could not read posts from this file. Make sure it has like_count, type, date columns.");
+      alert("Could not read posts from this file. Make sure it has like_count, type, and date columns.");
       return;
     }
     setState({ step: "report", analysis });
@@ -321,8 +274,16 @@ function runAnalysis() {
 }
 
 function reset() {
-  setState({ step:"upload", csvText:"", fileName:"", analysis:null,
-             aiReport:null, aiError:null, aiLoading:false, showKeyInput:false });
+  setState({ step:"upload", csvText:"", fileName:"", analysis:null });
+}
+
+function openStripe(key) {
+  const url = STRIPE_LINKS[key];
+  if (!url || url.startsWith("STRIPE_LINK_")) {
+    alert("Payment link not configured yet — check back soon!");
+    return;
+  }
+  window.open(url, "_blank");
 }
 
 // ─── thumb ───────────────────────────────────────────────────────────────────
@@ -355,7 +316,6 @@ function drawChart(canvasId, labels, values, colors) {
   const max = Math.max(...values) * 1.15 || 1;
   const bw  = (cW / values.length) * 0.6;
   const gap = cW / values.length;
-  // gridlines
   ctx.strokeStyle = "#ede5db"; ctx.lineWidth = 1;
   for (let i=0;i<=4;i++) {
     const y = pad.top + cH - (cH * i / 4);
@@ -363,7 +323,6 @@ function drawChart(canvasId, labels, values, colors) {
     ctx.fillStyle="#b0a090"; ctx.font="10px system-ui"; ctx.textAlign="right";
     ctx.fillText(((max/4*i)|0).toLocaleString(), pad.left-4, y+3);
   }
-  // bars
   values.forEach((v, i) => {
     const bh = (v/max)*cH;
     const x  = pad.left + gap*i + gap/2 - bw/2;
@@ -386,14 +345,21 @@ function render() {
 function drawCharts() {
   const { analysis } = state;
   if (!analysis) return;
-  // type chart
+  // type chart — colour by relative performance (green=best, amber=mid, red=worst)
   const tk = Object.keys(analysis.byType);
-  const tc = { Image:"#86EFAC", Video:"#93C5FD", Reel:"#C4B5FD" };
+  const sortedByAvg = [...tk].sort((a,b)=>analysis.byType[b].avg - analysis.byType[a].avg);
+  const typeColor = k => {
+    const rank = sortedByAvg.indexOf(k);
+    if (tk.length === 1) return B.green;
+    if (rank === 0) return B.green;
+    if (rank === sortedByAvg.length - 1) return B.red;
+    return B.amber;
+  };
   drawChart("chartType", tk.map(k=>`${k} (${analysis.byType[k].n})`),
-            tk.map(k=>analysis.byType[k].avg), tk.map(k=>tc[k]||B.peach));
-  // hour chart
+            tk.map(k=>analysis.byType[k].avg), tk.map(typeColor));
+  // hour chart — green = good windows, red = dead zone, amber = neutral
   if (analysis.hourData.length) {
-    const hourColor = h => (h>=7&&h<=11)||h===19||h===20 ? "#86EFAC" : h>=1&&h<=5 ? "#FCA5A5" : B.peach;
+    const hourColor = h => (h>=7&&h<=11)||h===19||h===20 ? B.green : h>=1&&h<=5 ? B.red : B.amber;
     drawChart("chartHour",
       analysis.hourData.map(h=>`${h.hour}h`),
       analysis.hourData.map(h=>h.avg),
@@ -414,24 +380,40 @@ function buildUpload() {
   return `
   <div class="hero">
     <h1>Instagram Profile Analyser</h1>
-    <p>Upload your post export CSV and get a full performance breakdown ... top posts, timing strategy, format comparison, and AI recommendations.</p>
+    <p>Upload your post export CSV and get a full performance breakdown — top posts, timing strategy, format comparison, and clear next steps.</p>
     <div class="hero-chips">
       <span class="chip">🏆 Top & bottom posts ranked</span>
       <span class="chip">⏰ Timezone strategy</span>
       <span class="chip">📊 Format comparison</span>
-      <span class="chip">🤖 AI insights</span>
+      <span class="chip">✅ Plain-language tips</span>
     </div>
   </div>
 
+  <details class="howto" open>
+    <summary>📥 Don't have a CSV yet? Here's how to get one (free)</summary>
+    <ol>
+      <li>Go to <a href="https://apify.com" target="_blank">apify.com</a> and create a free account.</li>
+      <li>Open the <strong>Fast Instagram Profile Posts Scraper</strong> actor:
+        <a href="https://console.apify.com/actors/Gv87i5PtUqPlLcM2W" target="_blank">console.apify.com/actors/Gv87i5PtUqPlLcM2W</a>
+      </li>
+      <li>Click <strong>Try for free</strong> (or <strong>Run</strong>).</li>
+      <li>Enter your Instagram username (without the @) in the input field.</li>
+      <li>Click <strong>Start</strong> — it takes about 1–2 minutes.</li>
+      <li>When it's done, go to the <strong>Output</strong> tab → click <strong>Export</strong> → choose <strong>CSV</strong>.</li>
+      <li>Download the file and upload it below.</li>
+    </ol>
+    <p style="margin-top:6px">The free Apify plan gives you enough credits to run this several times a month.</p>
+  </details>
+
   <div class="card">
     <h2 style="margin-top:0">Upload your CSV file</h2>
-    <div class="drop-zone ${state.fileName ? "" : ""}" id="dropZone">
+    <div class="drop-zone" id="dropZone">
       <div class="icon">📁</div>
       ${state.fileName
         ? `<div class="label" style="color:var(--coral)">✓ ${state.fileName}</div>
            <div class="sub">File loaded — ready to analyse</div>`
         : `<div class="label">Drop your CSV here or click to choose</div>
-           <div class="sub">Works with Phantombuster, Apify, or any export with likes, comments, type, date</div>`}
+           <div class="sub">Works with Apify, Phantombuster, or any export with likes, comments, type, date</div>`}
     </div>
     <input type="file" id="fileInput" accept=".csv,.txt">
     <div style="margin-top:16px;font-size:12px;color:var(--taupe);background:#fdf3ea;border-radius:8px;padding:10px 14px">
@@ -460,14 +442,49 @@ function buildLoading() {
   </div>`;
 }
 
+// ── metric helper ─────────────────────────────────────────────────────────────
+function metric(status, label, value, tip) {
+  return `<div class="metric ${status}">
+    <div class="ml"><span class="dot ${status}"></span>${label}</div>
+    <div class="mn">${value}</div>
+    <div class="mtip">${tip}</div>
+  </div>`;
+}
+
 // ── report ────────────────────────────────────────────────────────────────────
 function buildReport() {
-  const { analysis, aiReport, aiLoading, aiError, showKeyInput, apiKey } = state;
+  const { analysis } = state;
   if (!analysis) return "";
 
-  const htDelta = (analysis.avgWith - analysis.avgWithout).toFixed(1);
-  const htLabel = Math.abs(htDelta) < 1 ? "~0 diff" : `${htDelta > 0 ? "+" : ""}${htDelta} likes`;
+  const htDelta = +(analysis.avgWith - analysis.avgWithout).toFixed(1);
   const topType = analysis.topType || "Image";
+
+  // metric statuses
+  const htStatus = htDelta > 5 ? "good" : htDelta < -5 ? "bad" : "ok";
+  const htTip = htDelta > 5
+    ? `Posts with hashtags get ~${htDelta} more likes on average. Keep using a focused set of relevant hashtags.`
+    : htDelta < -5
+    ? `Posts with hashtags actually perform ~${Math.abs(htDelta)} likes worse. Hashtags may not be your discovery channel — focus energy on hooks and timing instead.`
+    : `Hashtags make little difference (~${Math.abs(htDelta)} likes). Not a priority lever right now.`;
+
+  const dzStatus = analysis.deadZone === 0 ? "good" : analysis.deadZone <= 3 ? "ok" : "bad";
+  const dzTip = analysis.deadZone === 0
+    ? "None of your posts went out during the 1–5am UTC dead zone — your timing discipline is solid."
+    : `${analysis.deadZone} post${analysis.deadZone>1?"s":""} went out during the 1–5am UTC dead zone, when both AU and US audiences are asleep. Try rescheduling to 7–11am AEST.`;
+
+  const bestHourTip = analysis.bestHour
+    ? `Your strongest posting hour is ${analysis.bestHour.hour}:00 UTC (avg score ${analysis.bestHour.avg}). Plan key content around this window.`
+    : "Not enough timestamped posts to find a clear pattern yet.";
+
+  const formatTip = `${topType} posts get the highest average likes (${analysis.byType[topType]?.avg||0}). Consider shifting more of your content mix toward this format.`;
+
+  const metricsHTML = [
+    metric("info", "Total posts analysed", analysis.total,
+      Object.keys(analysis.byType).map(k=>`${analysis.byType[k].n} ${k}`).join(" · ")),
+    metric("good", `Best format: ${topType}`, analysis.byType[topType]?.avg || 0, formatTip),
+    metric(htStatus, "Hashtag impact", (htDelta>0?"+":"")+htDelta+" likes", htTip),
+    metric(dzStatus, "Dead-zone posts (1–5am UTC)", analysis.deadZone, dzTip),
+  ].join("");
 
   // post card builder
   const postCard = (p, i, isTop) => {
@@ -497,82 +514,6 @@ function buildReport() {
     </div>`;
   };
 
-  // AI section
-  let aiSection = "";
-  if (!aiReport && !aiLoading) {
-    aiSection = `
-    <div class="card" style="margin-top:28px">
-      <h2 style="margin-top:0">AI-powered insights</h2>
-      <p style="margin-bottom:12px">Get competitor accounts, pattern analysis, white space opportunities, and 5 tailored content format recommendations — powered by Claude.</p>
-      ${showKeyInput ? `
-        <div class="key-box">
-          <label>Anthropic API key (sk-ant-…) — stays in your browser session only</label>
-          <input type="password" id="keyInput" value="${apiKey}" placeholder="sk-ant-api03-…">
-        </div>` : ""}
-      <button class="btn btn-primary" id="btnAI" ${showKeyInput && !apiKey ? "disabled" : ""}>
-        ${showKeyInput ? "Run AI analysis →" : "Unlock AI insights"}
-      </button>
-    </div>`;
-  } else if (aiLoading) {
-    aiSection = `<div class="card" style="margin-top:28px">
-      <div class="loading" style="padding:24px">
-        <div class="spinner"></div>
-        <p>Researching competitors and generating recommendations…</p>
-      </div>
-    </div>`;
-  } else if (aiError) {
-    aiSection = `<div class="card" style="margin-top:28px">
-      <div style="color:#922;background:#fde8e8;border-radius:8px;padding:12px;font-size:13px">${aiError}</div>
-      <button class="btn btn-ghost btn-sm" id="btnRetryAI" style="margin-top:10px">Try again</button>
-    </div>`;
-  } else if (aiReport) {
-    const patterns = (aiReport.key_patterns||[]).map((p,i) => `
-      <div class="card" style="flex:1 1 200px">
-        <div style="font-size:12px;font-weight:600;color:var(--coral);margin-bottom:4px">${p.title}</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5">${p.insight}</div>
-      </div>`).join("");
-
-    const competitors = (aiReport.competitors||[]).map(c => `
-      <div class="card">
-        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:8px">
-          <div>
-            <div style="font-size:14px;font-weight:600;color:var(--ink)">${c.name}</div>
-            <a href="${c.url}" target="_blank" style="font-size:12px">${c.handle}</a>
-          </div>
-          ${badge(c.followers+" followers","#eaf3de","#3b6d11")}
-        </div>
-        <div style="font-size:13px;color:var(--taupe);margin-bottom:5px;line-height:1.5"><strong style="color:var(--ink)">Why they grew:</strong> ${c.why_bigger}</div>
-        <div style="font-size:13px;color:var(--taupe);margin-bottom:5px;line-height:1.5"><strong style="color:var(--ink)">What to steal:</strong> ${c.what_to_steal}</div>
-        <div style="font-size:12px;color:#3b6d11;background:#eaf3de;border-radius:6px;padding:6px 10px;line-height:1.5"><strong>Your edge:</strong> ${c.your_edge}</div>
-      </div>`).join("");
-
-    const recs = (aiReport.recommendations||[]).map((r,i) => `
-      <div class="card card-aqua">
-        <div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px">${i+1}. ${r.format}</div>
-        <div style="font-size:13px;color:var(--taupe);margin-bottom:6px;line-height:1.5">${r.why}</div>
-        <div style="font-size:12px;font-style:italic;color:#5a4a3a;background:#fdf3ea;border-radius:6px;padding:6px 10px">Hook: "${r.hook_example}"</div>
-      </div>`).join("");
-
-    aiSection = `
-    <div style="margin-top:28px">
-      ${aiReport.executive_summary ? `
-        <div style="background:#fdf7f0;border:1px solid var(--sand);border-radius:10px;padding:16px 18px;margin-bottom:20px;font-size:14px;color:var(--ink);line-height:1.7">
-          ${aiReport.executive_summary}
-        </div>` : ""}
-      <h2>Key patterns</h2>
-      <div style="display:flex;flex-wrap:wrap;gap:10px">${patterns}</div>
-      ${aiReport.white_space ? `
-        <div class="card card-ai" style="margin-top:12px">
-          <div style="font-size:12px;font-weight:600;color:var(--coral);margin-bottom:4px">White space — what nobody in the niche is doing yet</div>
-          <div style="font-size:13px;color:var(--ink);line-height:1.6">${aiReport.white_space}</div>
-        </div>` : ""}
-      <h2>Competitors to watch</h2>
-      ${competitors}
-      <h2>5 content format recommendations</h2>
-      ${recs}
-    </div>`;
-  }
-
   return `
   <div style="margin-bottom:20px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:8px">
     <div>
@@ -582,20 +523,21 @@ function buildReport() {
     <button class="btn btn-ghost btn-sm" id="btnReset">← New analysis</button>
   </div>
 
-  <div class="metrics">
-    <div class="metric m0"><div class="ml">Total posts</div><div class="mn">${analysis.total}</div><div class="ms">${Object.keys(analysis.byType).map(k=>`${analysis.byType[k].n} ${k}`).join(" · ")}</div></div>
-    <div class="metric m1"><div class="ml">Avg likes (${topType})</div><div class="mn">${analysis.byType[topType]?.avg||0}</div><div class="ms">best performing format</div></div>
-    <div class="metric m2"><div class="ml">Hashtag impact</div><div class="mn">${htLabel}</div><div class="ms">with tags vs without</div></div>
-    <div class="metric m3"><div class="ml">Dead-zone posts</div><div class="mn">${analysis.deadZone}</div><div class="ms">published 1–5am UTC</div></div>
-    <div class="metric m4"><div class="ml">Best window</div><div class="mn" style="font-size:15px">7–11am AEST</div><div class="ms">AU + US crossover</div></div>
+  <div class="metrics">${metricsHTML}</div>
+
+  <div class="card" style="background:#F3EEFF;border-color:#C4B5FD">
+    <div class="ml"><span class="dot info"></span>Best posting window</div>
+    <div class="mn" style="margin-bottom:6px">${analysis.bestHour ? analysis.bestHour.hour + ":00 UTC" : "—"}</div>
+    <div class="mtip">${bestHourTip}</div>
   </div>
 
   <h2>Avg likes by content type</h2>
+  <p style="margin-bottom:10px;font-size:12px">🟢 best performing · 🟡 mid · 🔴 lowest performing</p>
   <div class="card"><canvas id="chartType" width="720" height="180"></canvas></div>
 
   ${analysis.hourData.length ? `
   <h2>Avg score by posting hour (UTC)</h2>
-  <p style="margin-bottom:10px;font-size:12px">🟢 good windows · 🟡 neutral · 🔴 dead zones (1–5am)</p>
+  <p style="margin-bottom:10px;font-size:12px">🟢 good windows (7–11am, 7–8pm) · 🟡 neutral · 🔴 dead zone (1–5am)</p>
   <div class="card"><canvas id="chartHour" width="720" height="180"></canvas></div>` : ""}
 
   <h2>Top 10 posts</h2>
@@ -604,7 +546,34 @@ function buildReport() {
   <h2 style="margin-top:28px">Bottom 10 posts</h2>
   ${analysis.bot10.map((p,i) => postCard(p,i,false)).join("")}
 
-  ${aiSection}
+  <h2 style="margin-top:32px">Want to go deeper?</h2>
+  <div class="paywall-grid">
+    <div class="card card-paid paywall-card">
+      <div style="font-weight:700">🔍 Deep Analysis</div>
+      <div class="price">$5</div>
+      <p>A detailed breakdown of why each top post worked, plus caption and hook patterns across your best content.</p>
+      <button class="btn btn-primary btn-sm" data-stripe="deep">Unlock Deep Analysis</button>
+    </div>
+    <div class="card card-paid paywall-card">
+      <div style="font-weight:700">⚔️ Competitor Comparison</div>
+      <div class="price">$5</div>
+      <p>3 real accounts in your niche outperforming you — what they do differently, and where your edge is.</p>
+      <button class="btn btn-primary btn-sm" data-stripe="competitor">Unlock Comparison</button>
+    </div>
+    <div class="card card-paid paywall-card">
+      <div style="font-weight:700">🎯 Strategic Recommendations</div>
+      <div class="price">$5</div>
+      <p>5 tailored content formats for your audience, each with a ready-to-use hook and posting strategy.</p>
+      <button class="btn btn-primary btn-sm" data-stripe="strategy">Unlock Recommendations</button>
+    </div>
+    <div class="card paywall-card bundle">
+      <div style="font-weight:700">✨ Unlock everything</div>
+      <div class="price">$10</div>
+      <p>All three add-ons above, bundled — the full strategic picture for your profile.</p>
+      <button class="btn btn-primary btn-sm" data-stripe="bundle">Unlock Everything</button>
+    </div>
+  </div>
+  <p style="margin-top:10px;font-size:12px">After payment, you'll receive instructions on how to get your results delivered.</p>
 
   <div style="text-align:center;margin-top:32px">
     <button class="btn btn-ghost btn-sm" id="btnReset2">Start new analysis</button>
@@ -613,15 +582,11 @@ function buildReport() {
 
 // ─── events ───────────────────────────────────────────────────────────────────
 function bindEvents() {
-  // upload
   const dropZone  = document.getElementById("dropZone");
   const fileInput = document.getElementById("fileInput");
   const btnAnalyse= document.getElementById("btnAnalyse");
   const btnReset  = document.getElementById("btnReset");
   const btnReset2 = document.getElementById("btnReset2");
-  const btnAI     = document.getElementById("btnAI");
-  const keyInput  = document.getElementById("keyInput");
-  const btnRetry  = document.getElementById("btnRetryAI");
 
   if (dropZone) {
     dropZone.onclick = () => fileInput && fileInput.click();
@@ -636,14 +601,10 @@ function bindEvents() {
   if (btnAnalyse) btnAnalyse.onclick = runAnalysis;
   if (btnReset)   btnReset.onclick   = reset;
   if (btnReset2)  btnReset2.onclick  = reset;
-  if (btnAI) {
-    btnAI.onclick = () => {
-      if (!state.showKeyInput) { setState({ showKeyInput: true }); return; }
-      runAI();
-    };
-  }
-  if (keyInput)   keyInput.oninput  = e => { state.apiKey = e.target.value; btnAI && (btnAI.disabled = !e.target.value); };
-  if (btnRetry)   btnRetry.onclick  = () => { setState({ aiError: null }); runAI(); };
+
+  document.querySelectorAll("[data-stripe]").forEach(btn => {
+    btn.onclick = () => openStripe(btn.getAttribute("data-stripe"));
+  });
 }
 
 // ─── boot ─────────────────────────────────────────────────────────────────────
